@@ -6,6 +6,16 @@ class Scrapper:
     """
     Classe para scrapper de informações sobre os aérodromos.
     """
+
+    def validate_len_icao(self, icao: str):
+        """
+        Verifica se o código ICAO possui 4 caracteres
+
+        Retorna:
+            True caso o tamanho seja 4, caso contrário, False
+        """
+        return False if len(icao) != 4 else True  
+
     def format_url(self, icao: str):
         """
         Formata a url para a requisição.
@@ -32,6 +42,14 @@ class Scrapper:
         """
         try:
             response = requests.get(url)
+           
+            # Se o código ICAO possuir 4 dígitos, mas não for de um
+            # aeródromo válido, o site retorna o history maior de zero
+            if len(response.history) > 0:
+                print("\nErro ao encontrar informações do aeródromo solicitado\n")
+                return None
+            
+            # Após isso, verifique o status_code da resposta do site
             return response.text if response.status_code == 200 else None
                 
         except Exception as error:
@@ -126,14 +144,20 @@ def run_scrapper():
     scrapper = Scrapper()
     icao = input("Digite o código ICAO: ")
 
-    url = scrapper.format_url(icao)
+    valid_icao = scrapper.validate_len_icao(icao)
 
-    html = scrapper.request(url)
+    if not valid_icao:
+        print("\nCódigo ICAO inválido!\n")
+    
+    else:
+        url = scrapper.format_url(icao)
 
-    if html:
-        soup = scrapper.parser_html(html)   
-        aerodrome_data = scrapper.get_infos(soup)
-        print_data(aerodrome_data)
+        html = scrapper.request(url)
+        
+        if html:
+            soup = scrapper.parser_html(html)   
+            aerodrome_data = scrapper.get_infos(soup)
+            print_data(aerodrome_data)
 
 def print_data(data: dict):
     """
@@ -143,13 +167,22 @@ def print_data(data: dict):
         data: Dicionário com as informações do aeródromo
     """
 
-
+    # Print nome e localização do Aeródromo pesquisado:
     print(f"\n\n AERÓDROMO {data['name']} / {data['city']}, {data['state']}")
+
+    # Print cartas disponíveis:
     print(f"---> Cartas disponíveis:")
-    for letter in data["letters"]:
-        print(f"    {letter['name']}: {letter['pdf']}")
+    if len(data["letters"]) > 0:
+        for letter in data["letters"]:
+            print(f"    {letter['name']}: {letter['pdf']}")
+    else:
+        print(f"    Nenhuma carta encontrada!")
+    
+    # Print horários de nascer e pôr do sol
     print(f"---> Horário Nascer do Sol: {data['sunrise']}")
     print(f"---> Horário Pôr do Sol: {data['sunset']}")
+
+    # print informações de TAF e METAR disponíveis:
     print(f"---> TAF: {data['taf']}")
     print(f"---> METAR: {data['metar']}")
     print(f"\nDados retirados da AISWEB - https://aisweb.decea.mil.br")
