@@ -63,7 +63,7 @@ cd traad-teste/
       python scrapper.py
     
     2- Com Docker:
-      # Execute:
+       # Rodando exercício:
       docker-compose run exerc2
       
     ```
