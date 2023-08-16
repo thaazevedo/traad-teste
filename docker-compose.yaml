@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  exerc1:
+    build:
+      context: ./exerc1
+      dockerfile: Dockerfile
+    volumes:
+      - ./exerc1:/exerc1
+  
+  exerc2:
+    tty: true
+    stdin_open: true
+    build:
+      context: ./exerc2
+      dockerfile: Dockerfile
+    volumes:
+      - ./exerc2:/exerc2
