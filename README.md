@@ -56,6 +56,9 @@ cd traad-teste/
       virtualenv venv
       . venv/bin/activate
 
+      # Instalando requirements
+      pip install -r requirements.txt
+    
       # Rodando exercício:
       python scrapper.py
     
