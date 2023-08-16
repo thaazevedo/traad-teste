@@ -33,21 +33,25 @@ cd traad-teste/
 
 - Exercício 1 - LinkedList:
   ```sh
-    1- Manualmente:
+    1- Com Docker:
+      # Rodando exercício:
+      docker-compose run exerc1
+  
+    2- Manualmente:
       # Entre no diretório do exercício:
       cd exerc1/
 
       # Rodando exercício:
       python linkedlist.py
-    
-    2- Com Docker:
-      # Rodando exercício:
-      docker-compose run exerc1
       
     ```
 - Exercício 2 - Scrapper:  
     ```sh
-    1- Manualmente:
+    1- Com Docker:
+       # Rodando exercício:
+       docker-compose run exerc2
+    
+    2- Manualmente:
       # Entre no diretório do exercício:
       cd exerc2/
       
@@ -61,10 +65,6 @@ cd traad-teste/
     
       # Rodando exercício:
       python scrapper.py
-    
-    2- Com Docker:
-       # Rodando exercício:
-      docker-compose run exerc2
       
     ```
 
