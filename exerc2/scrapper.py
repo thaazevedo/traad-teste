@@ -46,7 +46,7 @@ class Scrapper:
             # Se o código ICAO possuir 4 dígitos, mas não for de um
             # aeródromo válido, o site retorna o history maior de zero
             if len(response.history) > 0:
-                print("\nErro ao encontrar informações do aeródromo solicitado\n")
+                print("\nErro ao encontrar informações do aeródromo solicitado!\n")
                 return None
             
             # Após isso, verifique o status_code da resposta do site
@@ -137,6 +137,34 @@ class Scrapper:
                 
         except Exception as error:
             print(f'Erro durante execução da função `get_infos`: {str(error)}')
+    
+    def print_data(self, data: dict):
+        """
+        Realiza a impressão das informações da tela do usuário
+
+        Args:
+            data: Dicionário com as informações do aeródromo
+        """
+
+        # Print nome e localização do Aeródromo pesquisado:
+        print(f"\n\n AERÓDROMO {data['name']} / {data['city']}, {data['state']}")
+
+        # Print cartas disponíveis:
+        print(f"---> Cartas disponíveis:")
+        if len(data["letters"]) > 0:
+            for letter in data["letters"]:
+                print(f"    {letter['name']}: {letter['pdf']}")
+        else:
+            print(f"    Nenhuma carta encontrada!")
+        
+        # Print horários de nascer e pôr do sol
+        print(f"---> Horário Nascer do Sol: {data['sunrise']}")
+        print(f"---> Horário Pôr do Sol: {data['sunset']}")
+
+        # print informações de TAF e METAR disponíveis:
+        print(f"---> TAF: {data['taf']}")
+        print(f"---> METAR: {data['metar']}")
+        print(f"\nDados retirados da AISWEB - https://aisweb.decea.mil.br")
 
 
 
@@ -157,39 +185,7 @@ def run_scrapper():
         if html:
             soup = scrapper.parser_html(html)   
             aerodrome_data = scrapper.get_infos(soup)
-            print_data(aerodrome_data)
-
-def print_data(data: dict):
-    """
-    Realiza a impressão das informações da tela do usuário
-
-    Args:
-        data: Dicionário com as informações do aeródromo
-    """
-
-    # Print nome e localização do Aeródromo pesquisado:
-    print(f"\n\n AERÓDROMO {data['name']} / {data['city']}, {data['state']}")
-
-    # Print cartas disponíveis:
-    print(f"---> Cartas disponíveis:")
-    if len(data["letters"]) > 0:
-        for letter in data["letters"]:
-            print(f"    {letter['name']}: {letter['pdf']}")
-    else:
-        print(f"    Nenhuma carta encontrada!")
-    
-    # Print horários de nascer e pôr do sol
-    print(f"---> Horário Nascer do Sol: {data['sunrise']}")
-    print(f"---> Horário Pôr do Sol: {data['sunset']}")
-
-    # print informações de TAF e METAR disponíveis:
-    print(f"---> TAF: {data['taf']}")
-    print(f"---> METAR: {data['metar']}")
-    print(f"\nDados retirados da AISWEB - https://aisweb.decea.mil.br")
-    
-    
-
-
+            scrapper.print_data(aerodrome_data)
 
 if __name__ == "__main__":
     run_scrapper()
